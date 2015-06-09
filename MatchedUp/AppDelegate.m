@@ -7,6 +7,12 @@
 //
 
 #import "AppDelegate.h"
+#import <Parse/Parse.h>
+#import <FacebookSDK/FacebookSDK.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <Mixpanel.h>
+
+#define MIXPANEL_TOKEN @"b17aac21a9522d69a5a575fb828eda12"
 
 @interface AppDelegate ()
 
@@ -17,7 +23,26 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    //Parse App key
+    [Parse setApplicationId:@"DdENO1lIDdMHRbyzEBzgDKtBHhEP0rJ0lhmhhtJ9" clientKey:@"FEegQsyJdqcMtbRoBU9nwbs0N35Soc4YTCLlJsL3"];
+    
+    [PFFacebookUtils initializeFacebook];
+    
+    [Mixpanel sharedInstanceWithToken:MIXPANEL_TOKEN];
+    
+    NSString *defaultPrefsFile = [[NSBundle mainBundle] pathForResource:@"defaultPrefs" ofType:@"plist"];
+    NSDictionary *defaultPreferences = [NSDictionary dictionaryWithContentsOfFile:defaultPrefsFile];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPreferences];
+    
+    [[UINavigationBar appearance] setTintColor:[UIColor colorWithRed:12/255.0 green:158/255.0 blue:255/255.0 alpha:1.0]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor colorWithRed:12/255.0 green:158/255.0 blue:255/255.0 alpha:1.0], NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Light" size:20.0]}];
+    
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
